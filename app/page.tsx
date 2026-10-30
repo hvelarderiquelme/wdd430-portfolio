@@ -11,13 +11,13 @@ const sampleProjects = [
     title: "Weather App",
     description: "A real-time weather tracking application that fetches data from an external API.",
     technologies: ["JavaScript", "HTML", "CSS API"],
-    link: "https://example.com"
+    link: "https://weather.gc.ca"
   },
   {
     title: "E-Commerce Shopping Cart",
     description: "A full-featured shopping cart system with state management functionality.",
     technologies: ["React", "Context API", "Tailwind"],
-    link: "https://example.com"
+    link: "https://www.homedepot.ca/en/home.html"
   }
 ];
 
