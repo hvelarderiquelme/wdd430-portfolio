@@ -1,22 +1,19 @@
-import { Project } from '@/lib/projects-db';
+import { Project, getProjects } from "@/lib/projects-db";
 
-
-async function fetchSchoolProjects() {
-  const res = await fetch('http://localhost:3000/api/projects?type=school', { cache: 'no-store' });
-  if (!res.ok) throw new Error('Failed to fetch school projects');
-  return res.json() as Promise<Project[]>;
-}
+// 1. Tell Next.js 16 to allow dynamic database execution safely
+export const instant = false; 
 
 export default async function SchoolPage() {
-  const projects = await fetchSchoolProjects();
+  // 2. Fetch directly from your live Vercel database function!
+  const projects = await getProjects('school');
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-zinc-900 mb-4">School Assignments</h1>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">School Projects</h1>
       <div className="space-y-4">
         {projects.map((project) => (
-          <div key={project.id} className="p-4 border rounded-xl bg-blue-50/50 border-blue-200">
-            <h2 className="font-semibold text-lg text-blue-900">{project.title}</h2>
+          <div key={project.id} className="p-4 border rounded-xl bg-zinc-50">
+            <h2 className="font-semibold text-lg text-zinc-800">{project.title}</h2>
             <p className="text-zinc-600 text-sm mt-1">{project.description}</p>
           </div>
         ))}
