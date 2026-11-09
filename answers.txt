@@ -1,0 +1,16 @@
+The custom component is called TimeLineItem. It is a component that shows a time line of my training in software. 
+It is placed underneath the About Me section.
+It has four props in the interface:
+  year: string;
+  title: string;
+  subtitle: string;
+  description: string;
+
+  What is the purpose of app/layout.tsx in the Next.js App Router?
+  It produces the layout of the app and it is shared between pages. The layout does not change and it is not
+  reloaded. It is used for fix parts of the webpage like header, footer and navigation bar.
+
+  Why are the components in this assignment Server Components rather than Client Components?
+  They are server components so the data fetching happens in the backend, saving time and adding security.
+  Because everything happens in the backend the  UI shows a page that has been pre-rendered and there is less JavaScript loaded to the 
+  client's browser. This also improves the SEO.
