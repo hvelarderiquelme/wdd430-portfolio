@@ -1,32 +1,37 @@
-import ProjectList from "../components/ProjectList"; 
+import Link from "next/link";
+import ProjectList from "../components/ProjectList";
+import { getFeaturedProjects } from "@/lib/projects-db";
 
-const sampleProjects = [
-  {
-    title: "Portfolio Website",
-    description: "A personal portfolio website built to showcase my web development capabilities and projects.",
-    technologies: ["React", "Next.js", "Tailwind CSS"],
-    link: "https://github.com"
-  },
-  {
-    title: "Weather App",
-    description: "A real-time weather tracking application that fetches data from an external API.",
-    technologies: ["JavaScript", "HTML", "CSS API"],
-    link: "https://weather.gc.ca"
-  },
-  {
-    title: "E-Commerce Shopping Cart",
-    description: "A full-featured shopping cart system with state management functionality.",
-    technologies: ["React", "Context API", "Tailwind"],
-    link: "https://www.homedepot.ca/en/home.html"
-  }
-];
-
-// Ensure this matches exactly: export, default, function, capitalized name
-export default function Home() {
+export default async function Home() {
+  // throw new Error("Simulated database failure");
+  const featProjects = await getFeaturedProjects();
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">My Projects Portfolio</h1>
-      <ProjectList projects={sampleProjects} />
+      <div className ="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">Featured Projects</h1>
+        <Link
+          href="/projects"
+          className="text-sm font-medium text-blue-600 hover:text-blue-800 hover:underline"
+        >
+          View All Projects
+        </Link>
+      </div>
+      
+      {featProjects.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-gray-300 bg-zinc-50 p-8 text-center">
+          <p className="text-gray-600">
+            No featured projects are available right now.
+          </p>
+          <Link
+            href="/projects"
+            className="mt-3 inline-block text-sm font-medium text-blue-600 hover:underline"
+          >
+            Browse all projects &rarr;
+          </Link>
+        </div>
+      ) : (
+        <ProjectList projects={featProjects} />
+      )}
     </div>
   );
 }

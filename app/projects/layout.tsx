@@ -30,6 +30,13 @@ export default function ProjectsLayout({children} : ProjectsLayoutProps) {
             >
               School Projects
             </Link>
+
+            <Link 
+              href="/projects/create" 
+              className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-zinc-200 text-zinc-700 transition"
+            >
+              Create New Project
+            </Link>
           </nav>
         </aside>
 

@@ -7,6 +7,8 @@ async function getCurrentYear() {
 }
 
 export default async function Footer() {
+  "use cache"; /*For Next 16 to statically render this component and cache it for performance. 
+               This is a new feature in Next 16.*/
   const currentYear = await getCurrentYear();
 
   return (
