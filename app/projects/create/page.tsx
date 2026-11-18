@@ -123,6 +123,28 @@ export default function CreateProjectPage() {
                 </div>
             </div>
 
+            <div className="mb-4">
+                <label htmlFor="link" className="block text-sm font-medium text-zinc-700">
+                    Year Completed
+                </label>
+                <input
+                    type="yearCompleted"
+                    id="number"
+                    name="yearCompleted"
+                    className="mt-1 block w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                    aria-describedby="date-error"
+                    required
+                />
+                {/* This id matches aria-describedby above */}
+                <div id="yearCompleted-error" aria-live="polite" aria-atomic="true">
+                    {state.errors?.yearCompleted?.map((error) => (
+                    <p key={error} className="mt-1 text-sm text-red-600">
+                        {error}
+                    </p>
+                    ))}
+                </div>
+            </div>
+
         <button
             type="submit"
             disabled={isPending}

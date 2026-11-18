@@ -5,12 +5,20 @@ import { sql} from "@vercel/postgres";
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 
+const currentYear = new Date().getFullYear();
+
 const projectFormSchema = z.object({
     title: z.string().min(1, { message: "Title is required" }),
     description: z.string().min(1, { message: "Description is required" }),
     type: z.enum(["opensource", "school"], { message: "Type must be either 'opensource' or 'school'" }),
     technologies: z.string().min(1, { message: "At least one technology is required" }),
     link: z.string().url({ message: "Link must be a valid URL" }).optional().or(z.literal("")), // Allow empty string for optional link
+    yearCompleted : z.coerce
+        .number({message: "A year yyyy is required."})
+        .min(1,{message: "A year yyyy is required."})
+        .int("Year must be a whole number.")
+        .gte(2000, "Year must be 2000 or later.")
+        .lte(currentYear, `Year cannot be greater than ${currentYear}.`),        
 });
 
 export type State = {
@@ -20,6 +28,7 @@ export type State = {
         technologies?: string[];
         type?: string[];
         link?: string[];
+        yearCompleted?: string[];
     };
     message?: string | null;
 };
@@ -31,6 +40,7 @@ export async function createProject(prevState: State, formData: FormData):Promis
         type: formData.get("type"),
         technologies: formData.get("technologies"),
         link: formData.get("link"),
+        yearCompleted: formData.get("yearCompleted"),
     }
    
     const parsedData = projectFormSchema.safeParse(rawData);
