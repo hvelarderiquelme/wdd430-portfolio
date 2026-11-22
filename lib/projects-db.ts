@@ -11,6 +11,13 @@ export interface Project {
   link?: string;
 }
 
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  passwordHash: string;
+};
+
 const ITEMS_PER_PAGE = 3; // Set how many cards you want to see per page
 
 // Existing functions
@@ -90,3 +97,18 @@ export async function getFeaturedProjects(): Promise<Project[]> {
     return [];
   }  
 }
+
+export async function getUserByEmail(email: string): Promise<User | undefined> {
+  try {
+    const data = await sql<User>`
+      SELECT id, name, email, password_hash AS "passwordHash"
+      FROM users
+      WHERE email = ${email}
+    `;
+    return data.rows[0];
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+    throw new Error('Failed to fetch user.');
+  }
+}
+

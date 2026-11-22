@@ -4,6 +4,16 @@ import { z } from "zod";
 import { sql} from "@vercel/postgres";
 import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
+import { signIn, signOut, auth } from '@/auth';
+import { AuthError } from 'next-auth';
+
+async function requireOwnerSession() {
+  const session = await auth();
+  if (!session?.user) {
+    return null;
+  }
+  return session;
+}
 
 const currentYear = new Date().getFullYear();
 
@@ -34,6 +44,10 @@ export type State = {
 };
 
 export async function createProject(prevState: State, formData: FormData):Promise<State> {
+    const session = await requireOwnerSession();
+    if(!session){
+        return {message: 'Unathorized. You must be sigen in to create a project.'}
+    }
     const rawData = {
         title: formData.get("title"),
         description: formData.get("description"),
@@ -84,6 +98,10 @@ export async function createProject(prevState: State, formData: FormData):Promis
 }
 
 export async function updateProject(id: string, prevState: State, formData: FormData):Promise<State> {
+    const session = await requireOwnerSession();
+    if(!session){
+        return {message: 'Unathorized. You must be sigen in to update a project.'}
+    }
     const rawData = {
         title: formData.get("title"),
         description: formData.get("description"),
@@ -130,6 +148,10 @@ export async function updateProject(id: string, prevState: State, formData: Form
 }
 
 export async function deleteProject(id: string) {
+    const session = await requireOwnerSession();
+    if(!session){
+        throw new Error("Unauthorized. You must be signed in to delete a project.");
+    }
     try{
     await sql`
         DELETE FROM projects
@@ -148,4 +170,28 @@ export async function deleteProject(id: string) {
     
     // Always call redirect() AFTER the try...catch block
     redirect("/projects");
+}
+
+//Authentication
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid email or password.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error; // re-throw so Next.js handles redirects correctly
+  }
+}
+//Log Out function
+export async function logout() {
+  await signOut({ redirectTo: '/' });
 }

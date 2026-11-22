@@ -1,10 +1,25 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import NavLinks from './NavLinks';
+import { SignOutButton } from './sign-out-button';
+import { auth } from '@/auth';
+import { connection } from 'next/server';
+
+// Create a small async component to fetch the session inside Suspense
+async function NavSection() {
+  await connection();
+  const session = await auth();
+  const user = session?.user;
+
+  return (
+    <div className="flex items-center gap-4">
+      <NavLinks user={user} />
+      {user && <SignOutButton />}
+    </div>
+  );
+}
 
 export default async function Header() {
-  // "use cache"; /*For Next 16 to statically render this component and cache it for performance. 
-  //              This is a new feature in Next 16.*/
   return (
     <header className="bg-blue-600 text-white shadow-md">
       {/* The container wrapper holds both the title AND the nav elements on one row */}
@@ -15,9 +30,9 @@ export default async function Header() {
           <Link href="/">Horacio Velarde</Link>
         </div>
 
-        {/* Navigation Links */}
+        {/* Navigation Links + Sign Out Button */}
         <Suspense fallback={<div className="h-6 w-48 animate-pulse bg-blue-500 rounded" />}>
-          <NavLinks />
+          <NavSection />
         </Suspense>
 
       </div>
